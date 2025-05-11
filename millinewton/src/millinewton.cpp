@@ -14,16 +14,24 @@ void setup() {
 }
 
 void loop() { // main code here, will run repeatedly
+    static int count = 0; // Declare and initialize the static variable
+
     int start = millis();
 
     // int width  = 800; // 128 seconds on arduino nano ESP32
     // int height = 600;   
     // int iterations = 20;
-    int width  = 400; // 32 seconds on arduino nano ESP32, 122 seconds on Nano33 BLE
-    int height = 300;   
-    int iterations = 20;
-    int y, x, i;   
-    int r, root;
+    // int width  = 400; // 32 seconds on arduino nano ESP32, 122 seconds on Nano33 BLE
+    // int height = 300;   
+    // int iterations = 20;
+    int width  = 120; // 6.5 seconds on Nano33 BLE
+    int height = 90;   
+    // int iterations = 10;
+    int iterations = 10 + count; // For debug
+
+    int y, x, i;
+    // int r, root; // NOTE root was unused
+    int r;
 
     /* Complex variables */
     double roots[3][2];         /* Solutions                */
@@ -85,29 +93,34 @@ void loop() { // main code here, will run repeatedly
                 z_im = z_im - tmp_im;
             }
 
-            root = 0;
+            // root = 0; // NOTE root was unused
             for ( r=0; r<3; r++ ) 
             {
                 diff_re = z_re - roots[r][0];
                 diff_im = z_im - roots[r][1];
-                if ( sqrt(diff_re*diff_re + diff_im*diff_im) < 1.0 )
+                if ( sqrt(diff_re*diff_re + diff_im*diff_im) < 1.0 ) {
                     // fprintf ( out, "255 " );
                     #ifndef QUIET
                         Serial.print("255 ");
-                    #else
+                    #else 
                         ;
                     #endif
-                else
+                }
+                else {
                     // fprintf ( out, "0 " );
                     #ifndef QUIET
                         Serial.print("0 ");
                     #else
                         ;
                     #endif
+                }
             }
          }
     }
-    Serial.print(" Time: ");
+    count++; // Increment the count
+    Serial.print("Iteration: ");
+    Serial.print(count); // Print the count to the Serial Monitor    Serial.print(" Time: ");
+    Serial.print(" used ");
     Serial.print((millis() - start)/1000.0); // DEBUG show time
     Serial.println(" seconds");
     // fclose ( out );
